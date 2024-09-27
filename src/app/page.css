@@ -1,0 +1,37 @@
+h1 {
+    padding-left: 30px;
+}
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 40px;
+    height: 80vh;
+}
+textarea {
+    width: 96%;
+    height: 100%;
+    resize: none;
+    padding: 10px;
+    outline: none;
+}
+.customize {
+    position: absolute;
+    right: 40px;
+    top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 150px;
+}
+input[type="number"] {
+    width: 75px;
+}
+.customize button {
+    cursor: pointer;
+}
+.markdown, .preview {
+    width: 45%;
+    height: 95%;
+    overflow-y: scroll;
+}
