@@ -1,9 +1,10 @@
 import Image from "next/image";
 "use client";
 import { useState } from 'react'
+import { marked } from 'marked'
 import './page.css';
 
-export default function Home() {
+export default function Home() : React.ReactElement {
 
   const darkTheme = {
     backgroundColor: '#222',
@@ -18,6 +19,7 @@ export default function Home() {
 
   const [fontSize, setFontSize] = useState<number>(14);
   const [theme, setTheme] = useState(lightTheme);
+  const [parsedText, setParsedText] = useState<string>('');
 
   const changeTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
     const value: string = e.currentTarget.textContent ?? 'Light';
@@ -32,19 +34,35 @@ export default function Home() {
     }
   }
 
+  const parseMarkdown = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const text = e.currentTarget.value ?? '';
+    const parsedText = await marked(text);
+    setParsedText(parsedText);
+  }
+
   return (
     <div style={{backgroundColor: theme.backgroundColor}}>
       <h1 style={{color:theme.textColor}}>Markdown Previewer</h1>
       <div className="customize">
         <button onClick={changeTheme}>Theme: Dark</button>
-        <label style={{color:theme.textColor}}>Font size: <input type="number" value={fontSize} onChange={(e) => setFontSize(parseInt(e.target.value))}/></label>
+        <label style={{color:theme.textColor}}>
+          Font size: 
+          <input 
+            type="number" 
+            value={fontSize} 
+            onChange={(e) => setFontSize(parseInt(e.target.value))}/>
+        </label>
       </div>
       <div className="container flex ">
         <div className="markdown">
-          <textarea style={{fontSize, color: theme.textColor, backgroundColor:theme.containerBackgroundColor}}></textarea>
+          <textarea 
+            onChange={parseMarkdown} 
+            style={{fontSize, color: theme.textColor, backgroundColor:theme.containerBackgroundColor}}>
+          </textarea>
         </div>
-        <div className="preview">
-          <textarea style={{fontSize, color: theme.textColor, backgroundColor:theme.containerBackgroundColor}} readOnly></textarea>
+        <div className="preview" style={{fontSize, color: theme.textColor, backgroundColor:theme.containerBackgroundColor}}
+        dangerouslySetInnerHTML={{ __html: parsedText }}>
+          
         </div>
       </div>
     </div>

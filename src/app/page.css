@@ -35,3 +35,6 @@ input[type="number"] {
     height: 95%;
     overflow-y: scroll;
 }
+.preview {
+    padding-left: 10px;
+}
