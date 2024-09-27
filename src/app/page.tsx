@@ -2,6 +2,7 @@ import Image from "next/image";
 "use client";
 import { useState } from 'react'
 import { marked } from 'marked'
+import DOMPurify from 'dompurify';
 import './page.css';
 
 export default function Home() : React.ReactElement {
@@ -14,7 +15,7 @@ export default function Home() : React.ReactElement {
   const lightTheme = {
     backgroundColor: '#ddd',
     textColor: 'black',
-    containerBackgroundColor: '#ccc'
+    containerBackgroundColor: '#eee'
   }
 
   const [fontSize, setFontSize] = useState<number>(14);
@@ -37,7 +38,7 @@ export default function Home() : React.ReactElement {
   const parseMarkdown = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.currentTarget.value ?? '';
     const parsedText = await marked(text);
-    setParsedText(parsedText);
+    setParsedText(DOMPurify.sanitize(parsedText));
   }
 
   return (
@@ -61,8 +62,8 @@ export default function Home() : React.ReactElement {
           </textarea>
         </div>
         <div className="preview" style={{fontSize, color: theme.textColor, backgroundColor:theme.containerBackgroundColor}}
-        dangerouslySetInnerHTML={{ __html: parsedText }}>
-          
+          // Previously sanitized the html so it's saved
+          dangerouslySetInnerHTML={{ __html: parsedText }}>
         </div>
       </div>
     </div>
