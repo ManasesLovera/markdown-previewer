@@ -1,8 +1,9 @@
-import Image from "next/image";
+// import Image from "next/image";
 "use client";
 import { useState } from 'react'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify';
+import { downloadHtml } from './downLoadHtml';
 import './page.css';
 
 export default function Home() : React.ReactElement {
@@ -20,7 +21,7 @@ export default function Home() : React.ReactElement {
 
   const [fontSize, setFontSize] = useState<number>(14);
   const [theme, setTheme] = useState(lightTheme);
-  const [parsedText, setParsedText] = useState<string>('');
+  const [markdownText, setMarkdownText] = useState<string>('');
 
   const changeTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
     const value: string = e.currentTarget.textContent ?? 'Light';
@@ -38,7 +39,7 @@ export default function Home() : React.ReactElement {
   const parseMarkdown = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.currentTarget.value ?? '';
     const parsedText = await marked(text);
-    setParsedText(DOMPurify.sanitize(parsedText));
+    setMarkdownText(DOMPurify.sanitize(parsedText));
   }
 
   return (
@@ -54,7 +55,7 @@ export default function Home() : React.ReactElement {
             onChange={(e) => setFontSize(parseInt(e.target.value))}/>
         </label>
       </div>
-      <div className="container flex ">
+      <div className="container">
         <div className="markdown">
           <textarea 
             onChange={parseMarkdown} 
@@ -63,9 +64,14 @@ export default function Home() : React.ReactElement {
         </div>
         <div className="preview" style={{fontSize, color: theme.textColor, backgroundColor:theme.containerBackgroundColor}}
           // Previously sanitized the html so it's saved
-          dangerouslySetInnerHTML={{ __html: parsedText }}>
+          dangerouslySetInnerHTML={{ __html: markdownText }}>
+            
         </div>
+        <button onClick={(e) => downloadHtml(e, markdownText)} className="downloadHtmlBtn">
+        Download as HTML
+      </button>
       </div>
+      
     </div>
     // <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
     //   <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
